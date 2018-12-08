@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/echernukha/gocourse/simplevideoserver/tools"
 	"net/http"
 	"os"
 	"os/signal"
@@ -17,7 +18,7 @@ func main() {
 	file, err := os.OpenFile("my.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err == nil {
 		log.SetOutput(file)
-		defer file.Close()
+		defer tools.CloseQuietly(file)
 	}
 
 	killSignalCh := getKillSignalCh()
@@ -26,7 +27,7 @@ func main() {
 	log.WithFields(log.Fields{"url": serverUrl}).Info("starting the server")
 
 	waitForKillSignal(killSignalCh)
-	srv.Shutdown(context.Background())
+	_ = srv.Shutdown(context.Background())
 }
 
 func startServer(serverUrl string) *http.Server {

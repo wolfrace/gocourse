@@ -21,7 +21,7 @@ func handleListRequest(w http.ResponseWriter, _ *http.Request) {
 		return
 	}
 
-	_, err = fmt.Fprint(w, b)
+	_, err = fmt.Fprint(w, string(b))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

@@ -3,15 +3,24 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"net/http"
 )
 
-func handleVideoRequest(w http.ResponseWriter, _ *http.Request) {
+func handleVideoRequest(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"] //Для запросов вида /video/{ID}
+
+	if id == "" {
+		http.Error(w, "invalid video id", http.StatusBadRequest)
+		return
+	}
+
 	data := videoInfo{
-		ID:        "d290f1ee-6c54-4b01-90e6-d701748f0851",
+		ID:        id,
 		Name:      "Black Retrospetive Woman",
 		Duration:  15,
-		Thumbnail: "/content/d290f1ee-6c54-4b01-90e6-d701748f0851/screen.jpg",
+		Thumbnail: fmt.Sprintf("/content/%s/screen.jpg", id),
 	}
 
 	b, err := json.Marshal(data)

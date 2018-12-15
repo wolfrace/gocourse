@@ -2,18 +2,32 @@ package main
 
 import (
 	"context"
-	"github.com/echernukha/gocourse/simplevideoserver/tools"
+	"database/sql"
+	_ "github.com/go-sql-driver/mysql"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/echernukha/gocourse/simplevideoserver/handlers"
+	"github.com/echernukha/gocourse/simplevideoserver/tools"
 
 	log "github.com/sirupsen/logrus"
 )
 
 func main() {
+	db, err := sql.Open("mysql",
+		"root:123@tcp(127.0.0.1:3306)/videoserver")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer db.Close()
+
+	if err := db.Ping(); err != nil {
+		log.Fatal(err)
+	}
+
 	log.SetFormatter(&log.JSONFormatter{})
 	file, err := os.OpenFile("my.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err == nil {

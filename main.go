@@ -22,7 +22,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	defer db.Close()
+	defer tools.CloseQuietly(db)
 
 	if err := db.Ping(); err != nil {
 		log.Fatal(err)
